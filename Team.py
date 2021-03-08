@@ -2,8 +2,9 @@ from operator import attrgetter
 
 
 class Team:
-    def __init__(self, name, players):
+    def __init__(self, name, players, color):
         self.name = name
+        self.color = color
         self.players = players
         self.points = 0
 
