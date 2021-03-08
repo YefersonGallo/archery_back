@@ -8,6 +8,8 @@ class Play:
     team_2_history = []
 
     def init_play(self, team_1, team_2):
+        team_1.finish_game()
+        team_2.finish_game()
         winner = self.create_player(0, 0, 0, 0)
         for round in range(1, 11):
             launch_1 = int(sum(player.endurance_round for player in team_1.players) / 5) + 5
@@ -41,8 +43,6 @@ class Play:
             winner = team_2.get_player_win()
         self.team_1_history.append(team_1)
         self.team_2_history.append(team_2)
-        team_1.finish_game()
-        team_2.finish_game()
         return {"team_1": team_1,
                 "team_2": team_2,
                 "team_win": team_1 if team_1.points > team_2.points else team_2,
