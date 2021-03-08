@@ -20,11 +20,12 @@ def ping():
 @cross_origin(supports_credentials=True)
 def create_team():
     name = request.json["name"]
-    team = play.create_teams(name=name)
+    color = request.json["color"]
+    team = play.create_teams(name=name, color=color)
     players = []
     for player in team.players:
         players.append({'id': player.id, 'endurance': player.endurance, 'luck': player.luck, 'gender': player.gender})
-    res = {'name': team.name, 'players': players}
+    res = {'name': team.name, 'players': players, 'color': color}
     return jsonify(res)
 
 
@@ -37,8 +38,9 @@ def play_round():
     res = {"team_1": send_team(results["team_1"]),
            "team_2": send_team(results["team_2"]),
            "team_win": send_team(results["team_win"]),
-           "winner": {'id': results["winner"].id, 'endurance': results["winner"].endurance, 'luck': results["winner"].luck,
-                      'gender': results["winner"].gender, 'points':results["winner"].points}}
+           "winner": {'id': results["winner"].id, 'endurance': results["winner"].endurance,
+                      'luck': results["winner"].luck,
+                      'gender': results["winner"].gender, 'points': results["winner"].points}}
     return jsonify(res)
 
 
@@ -47,14 +49,15 @@ def get_team(team):
     players_arr = []
     for player in players:
         players_arr.append(Player(player["id"], player["endurance"], player["luck"], player["gender"]))
-    return Team(name=team["name"], players=players_arr)
+    return Team(name=team["name"], players=players_arr, color=team["color"])
 
 
 def send_team(team):
     players = []
     for player in team.players:
-        players.append({'id': player.id, 'endurance': player.endurance, 'luck': player.luck, 'gender': player.gender})
-    return {'name': team.name, 'players': players}
+        players.append({'id': player.id, 'endurance': player.endurance, 'luck': player.luck, 'gender': player.gender,
+                        'points': player.points})
+    return {'name': team.name, 'players': players, 'color': team.color}
 
 
 if __name__ == '__main__':

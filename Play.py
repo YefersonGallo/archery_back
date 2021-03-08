@@ -8,6 +8,8 @@ class Play:
     team_2_history = []
 
     def init_play(self, team_1, team_2):
+        team_1.new_round()
+        team_2.new_round()
         team_1.finish_game()
         team_2.finish_game()
         winner = self.create_player(0, 0, 0, 0)
@@ -33,8 +35,6 @@ class Play:
                     team_2.get_player_winner_round()
             self.launch_lucky(team_1)
             self.launch_lucky(team_2)
-            team_1.new_round()
-            team_2.new_round()
         if team_1.get_player_win().win == team_2.get_player_win().win:
             self.solve_tie_finish(team_1, team_2)
         if team_1.get_player_win().win > team_2.get_player_win().win:
@@ -73,14 +73,14 @@ class Play:
     def create_player(self, id, endurance, luck, gender):
         return Player(id, int(45 + (65 - 45) * endurance), 1 + (5 - 1) * luck, "female" if gender < 0.5 else "male")
 
-    def create_teams(self, name):
+    def create_teams(self, name, color):
         numbers = linear_congruence(55)
         while not test_all(numbers):
             numbers = linear_congruence(55)
         players = []
         for i in range(1, 16):
             players.append(self.create_player(i, numbers[i], numbers[i + 1], numbers[i + 2]))
-        return Team(players=players, name=name)
+        return Team(players=players, name=name, color=color)
 
     def get_point(self, launch, player):
         new_launch = int(99 * launch)
@@ -157,3 +157,7 @@ class Play:
             while not test_all(lucky):
                 lucky = linear_congruence(2)
             team.get_global_score(self.get_point(lucky[0], team.lucky_player()))
+
+
+#play = Play()
+#print(play.init_play(play.create_teams("efr"), play.create_teams("efr")))
