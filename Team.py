@@ -22,13 +22,20 @@ class Team:
     def lucky_player(self):
         return max(self.players, key=attrgetter('luck'))
 
+    def lucky_player_round(self):
+        return max(self.players, key=attrgetter('extra'))
+
     def finish_game(self):
+        self.points = 0
         for player in self.players:
             player.restart_endurance()
+            player.expert_launch = 0
+            player.points = 0
+            player.win = 0
+            player.expert_launch_bool = False
 
     def get_player_winner_round(self):
         winner = max(self.players, key=attrgetter('points'))
-        print(winner)
         winner.win_round()
         return winner
 

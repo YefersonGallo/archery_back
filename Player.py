@@ -10,9 +10,18 @@ class Player:
         self.points = 0
         self.extra = 0
         self.win = 0
+        self.expert_launch = 0
+        self.expert_launch_bool = False
 
     def launch(self):
-        self.endurance_round -= 5
+        if self.experience >= 19 and not self.expert_launch_bool:
+            self.expert_launch = 3
+            self.expert_launch_bool = True
+        if self.expert_launch > 0:
+            self.expert_launch -= 1
+        if self.expert_launch == 0:
+            self.expert_launch_bool = False
+            self.endurance_round -= 5
 
     def win_points(self, point_launch):
         self.points += point_launch
@@ -33,6 +42,7 @@ class Player:
 
     def restart_endurance(self):
         self.endurance_round = self.endurance
+        self.endurance_previous_round = self.endurance
 
     def extra_launch(self):
         if self.extra != 0:

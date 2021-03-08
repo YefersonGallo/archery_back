@@ -5,9 +5,10 @@ from Team import Team
 
 class Play:
 
-    def init_play(self):
-        team_1 = self.create_teams("team1")
-        team_2 = self.create_teams("team2")
+    team_1_history = []
+    team_2_history = []
+
+    def init_play(self, team_1, team_2):
         for round in range(1, 11):
             launch_1 = int(sum(player.endurance_round for player in team_1.players) / 5) + 5
             launch_2 = int(sum(player.endurance_round for player in team_2.players) / 5) + 5
@@ -21,53 +22,51 @@ class Play:
             self.assign_luck(team_2)
             winner_1 = team_1.get_player_winner()
             winner_2 = team_2.get_player_winner()
-            print("Points win team 1:{}".format(winner_1.points))
-            print("Points win team 2:{}".format(winner_2.points))
             if winner_1.points == winner_2.points:
-                print("Tie")
-                self.solve_tie(team_1, team_2, launch)
+                self.solve_tie(team_1, team_2)
             if winner_1.points != winner_2.points:
                 if winner_1.points > winner_2.points:
                     team_1.get_player_winner_round()
-                    print("Win Team 1!!!")
                 if winner_1.points < winner_2.points:
                     team_2.get_player_winner_round()
-                    print("Win Team 2!!!")
+            self.launch_lucky(team_1)
+            self.launch_lucky(team_2)
             team_1.new_round()
             team_2.new_round()
-            print("------------ROUND {}--------------".format(round))
-        print("||||||||||||||||||||||||||||||||||")
-        print("Winner play team 1:{}".format(team_1.get_player_win().id))
-        print("Winner play team 2:{}".format(team_2.get_player_win().id))
-        print("___________________________")
-        print("Team 1 points:{}".format(team_1.points))
-        print("Team 2 points:{}".format(team_2.points))
-        print("___________________________")
-        team_1.get_global_score(self.launch_lucky(team_1.lucky_player()))
-        team_2.get_global_score(self.launch_lucky(team_2.lucky_player()))
+        if team_1.get_player_win().win == team_2.get_player_win().win:
+            self.solve_tie_finish(team_1, team_2)
+        if team_1.get_player_win().win > team_2.get_player_win().win:
+            winner = team_1.get_player_win()
+        if team_1.get_player_win().win < team_2.get_player_win().win:
+            winner = team_2.get_player_win()
+        self.team_1_history.append(team_1)
+        self.team_2_history.append(team_2)
         team_1.finish_game()
         team_2.finish_game()
-        print("___________________________")
-        print("Team 1 points:{}".format(team_1.points))
-        print("Team 2 points:{}".format(team_2.points))
-        print(">>>>>>>>>>>>>>>>WIN TEAM {}<<<<<<<<<<<<<<<<<<<<".format(1 if team_1.points > team_2.points else 2))
-        print("___________________________")
-        for player in team_1.players:
-            print("Id:{}, Experience:{}, Win:{}".format(player.id, player.experience, player.win))
-        print("----------------------------////////////////////////")
-        for player in team_2.players:
-            print("Id:{}, Experience:{}, Win:{}".format(player.id, player.experience, player.win))
-        print("READY FOR NEXT GAME!!!!!")
+        return {"team_1": team_1,
+                "team_2": team_2,
+                "team_win": team_1 if team_1.points > team_2.points else team_2,
+                "winner": winner}
 
-    def solve_tie(self, team_1, team_2, launch):
-        print("Init")
+    def solve_tie_finish(self, team_1, team_2):
+        while team_1.get_player_winner().win == team_2.get_player_winner().win:
+            launch = linear_congruence(2)
+            while not test_all(launch):
+                launch = linear_congruence(2)
+            point_1 = self.get_point(launch[0], team_1.get_player_winner())
+            point_2 = self.get_point(launch[1], team_2.get_player_winner())
+            if point_1 > point_2:
+                team_1.get_player_winner().win += 1
+            elif point_1 < point_2:
+                team_2.get_player_winner().win += 1
+
+    def solve_tie(self, team_1, team_2):
         while team_1.get_player_winner().points == team_2.get_player_winner().points:
             launch = linear_congruence(2)
             while not test_all(launch):
                 launch = linear_congruence(2)
             point_1 = self.get_point(launch[0], team_1.get_player_winner())
             point_2 = self.get_point(launch[1], team_2.get_player_winner())
-            print(point_1, point_2)
             team_1.get_player_winner().win_points(point_1)
             team_2.get_player_winner().win_points(point_2)
 
@@ -116,6 +115,7 @@ class Play:
                 self.launch_for_player(step, player)
             team.get_global_score(player.points)
             init = count
+        self.launch_lucky(team)
         team = self.assign_fatigue(team)
         return team
 
@@ -143,8 +143,17 @@ class Play:
             fatigues.append(2)
         return fatigues
 
-    def launch_lucky(self, player):
+    def launch_lucky(self, team):
         lucky = linear_congruence(2)
         while not test_all(lucky):
             lucky = linear_congruence(2)
-        return self.get_point(lucky[0], player)
+        team.get_global_score(self.get_point(lucky[0], team.lucky_player()))
+        if team.lucky_player().extra == 0:
+            team.lucky_player().extra = 1
+        else:
+            team.lucky_player().extra_launch()
+        if team.lucky_player().extra >= 3:
+            lucky = linear_congruence(2)
+            while not test_all(lucky):
+                lucky = linear_congruence(2)
+            team.get_global_score(self.get_point(lucky[0], team.lucky_player()))
