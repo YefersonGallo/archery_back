@@ -9,6 +9,7 @@ class Play:
     team_2_history = []
 
     def init_play(self, team_1, team_2):
+        winner = ""
         for round in range(1, 11):
             launch_1 = int(sum(player.endurance_round for player in team_1.players) / 5) + 5
             launch_2 = int(sum(player.endurance_round for player in team_2.players) / 5) + 5
