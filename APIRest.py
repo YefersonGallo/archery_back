@@ -38,9 +38,10 @@ def play_round():
     res = {"team_1": send_team(results["team_1"]),
            "team_2": send_team(results["team_2"]),
            "team_win": send_team(results["team_win"]),
-           "winner": {'id': results["winner"].id, 'endurance': results["winner"].endurance,
-                      'luck': results["winner"].luck,
-                      'gender': results["winner"].gender, 'points': results["winner"].points}}
+           "winner": {'id': results["winner"]["player"].id, 'endurance': results["winner"]["player"].endurance,
+                      'luck': results["winner"]["player"].luck,
+                      'gender': results["winner"]["player"].gender, 'points': results["winner"]["player"].points,
+                      "team": results["winner"]["team"]}}
     return jsonify(res)
 
 

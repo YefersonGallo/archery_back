@@ -12,7 +12,7 @@ class Play:
         team_2.new_round()
         team_1.finish_game()
         team_2.finish_game()
-        winner = self.create_player(0, 0, 0, 0)
+        winner = {"player": self.create_player(0, 0, 0, 0), "team": ""}
         for round in range(1, 11):
             launch_1 = int(sum(player.endurance_round for player in team_1.players) / 5) + 5
             launch_2 = int(sum(player.endurance_round for player in team_2.players) / 5) + 5
@@ -38,9 +38,9 @@ class Play:
         if team_1.get_player_win().win == team_2.get_player_win().win:
             self.solve_tie_finish(team_1, team_2)
         if team_1.get_player_win().win > team_2.get_player_win().win:
-            winner = team_1.get_player_win()
+            winner = {"player": team_1.get_player_win(), "team": team_1.name}
         if team_1.get_player_win().win < team_2.get_player_win().win:
-            winner = team_2.get_player_win()
+            winner = {"player": team_2.get_player_win(), "team": team_2.name}
         self.team_1_history.append(team_1)
         self.team_2_history.append(team_2)
         return {"team_1": team_1,
@@ -158,6 +158,5 @@ class Play:
                 lucky = linear_congruence(2)
             team.get_global_score(self.get_point(lucky[0], team.lucky_player()))
 
-
-#play = Play()
-#print(play.init_play(play.create_teams("efr"), play.create_teams("efr")))
+# play = Play()
+# print(play.init_play(play.create_teams("efr"), play.create_teams("efr")))
