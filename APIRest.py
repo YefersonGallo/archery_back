@@ -7,6 +7,10 @@ from Team import Team
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 play = Play()
+team_1_history = []
+team_2_history = []
+male_total = 0
+female_total = 0
 
 
 # Petición para comprobar la conexión del servidor
