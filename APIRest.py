@@ -56,7 +56,10 @@ def play_round():
 @app.route('/statistics', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def total():
-    return jsonify({'response': 'pong!'})
+    res = play.get_total_points()
+    return jsonify(
+        {"male": res["male"], "female": res["female"], "team_1": res["team_1"], "total_points_1": res["total_points_1"],
+         "team_2": res["team_2"], "total_points_2": res["total_points_2"]})
 
 
 def get_team(team):

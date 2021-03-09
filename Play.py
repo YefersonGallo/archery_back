@@ -6,6 +6,8 @@ from Team import Team
 class Play:
     team_1_history = []
     team_2_history = []
+    male_total = 0
+    female_total = 0
 
     def init_play(self, team_1, team_2):
         team_1.new_round()
@@ -54,6 +56,8 @@ class Play:
             lucky = {"player": team_1.lucky_player_round(), "team": team_1.name}
         if team_1.lucky_player_round().extra < team_2.lucky_player_round().extra:
             lucky = {"player": team_2.lucky_player_round(), "team": team_2.name}
+        self.female_total += female
+        self.male_total += male
         return {"team_1": team_1,
                 "team_2": team_2,
                 "team_win": team_1 if team_1.points > team_2.points else team_2,
@@ -61,6 +65,12 @@ class Play:
                 "lucky": lucky,
                 "male": male,
                 "female": female}
+
+    def get_total_points(self):
+        return {"male": self.male_total, "female": self.female_total, "team_1": self.team_1_history[0].name,
+                "total_points_1": sum(team.points for team in self.team_1_history),
+                "team_2": self.team_2_history[0].name,
+                "total_points_2": sum(team.points for team in self.team_2_history)}
 
     def solve_tie_finish(self, team_1, team_2):
         while team_1.get_player_winner().win == team_2.get_player_winner().win:
