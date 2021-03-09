@@ -43,10 +43,16 @@ class Play:
             winner = {"player": team_2.get_player_win(), "team": team_2.name}
         self.team_1_history.append(team_1)
         self.team_2_history.append(team_2)
+        lucky = {"player": self.create_player(0, 0, 0, 0), "team": ""}
+        if team_1.lucky_player_round().extra > team_2.lucky_player_round().extra:
+            lucky = {"player": team_1.lucky_player_round(), "team": team_1.name}
+        if team_1.lucky_player_round().extra < team_2.lucky_player_round().extra:
+            lucky = {"player": team_2.lucky_player_round(), "team": team_2.name}
         return {"team_1": team_1,
                 "team_2": team_2,
                 "team_win": team_1 if team_1.points > team_2.points else team_2,
-                "winner": winner}
+                "winner": winner,
+                "lucky": lucky}
 
     def solve_tie_finish(self, team_1, team_2):
         while team_1.get_player_winner().win == team_2.get_player_winner().win:
@@ -159,4 +165,4 @@ class Play:
             team.get_global_score(self.get_point(lucky[0], team.lucky_player()))
 
 # play = Play()
-# print(play.init_play(play.create_teams("efr"), play.create_teams("efr")))
+# print(play.init_play(play.create_teams("efr", ""), play.create_teams("efr", "")))
