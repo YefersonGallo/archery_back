@@ -34,11 +34,14 @@ def create_team():
     return jsonify(res)
 
 
-@app.route('/play_round', methods=['POST'])
+@app.route('/play_game', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def play_round():
     team_1 = get_team(request.json["team1"])
     team_2 = get_team(request.json["team2"])
+    iteration = request.json["i"]
+    if iteration == 1:
+        play.restart_historial()
     results = play.init_play(team_1, team_2)
     res = {"team_1": send_team(results["team_1"]),
            "team_2": send_team(results["team_2"]),

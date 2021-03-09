@@ -66,6 +66,12 @@ class Play:
                 "male": male,
                 "female": female}
 
+    def restart_historial(self):
+        self.team_1_history = []
+        self.team_2_history = []
+        self.male_total = 0
+        self.female_total = 0
+
     def get_total_points(self):
         return {"male": self.male_total, "female": self.female_total, "team_1": self.team_1_history[0].name,
                 "total_points_1": sum(team.points for team in self.team_1_history),
