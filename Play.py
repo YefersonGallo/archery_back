@@ -13,6 +13,8 @@ class Play:
         team_1.finish_game()
         team_2.finish_game()
         winner = {"player": self.create_player(0, 0, 0, 0), "team": ""}
+        male = 0
+        female = 0
         for round in range(1, 11):
             launch_1 = int(sum(player.endurance_round for player in team_1.players) / 5) + 5
             launch_2 = int(sum(player.endurance_round for player in team_2.players) / 5) + 5
@@ -30,9 +32,13 @@ class Play:
                 self.solve_tie(team_1, team_2)
             if winner_1.points != winner_2.points:
                 if winner_1.points > winner_2.points:
-                    team_1.get_player_winner_round()
+                    winner_round = team_1.get_player_winner_round()
                 if winner_1.points < winner_2.points:
-                    team_2.get_player_winner_round()
+                    winner_round = team_2.get_player_winner_round()
+            if winner_round.gender == "male":
+                male += 1
+            if winner_round.gender == "female":
+                female += 1
             self.launch_lucky(team_1)
             self.launch_lucky(team_2)
         if team_1.get_player_win().win == team_2.get_player_win().win:
@@ -52,7 +58,9 @@ class Play:
                 "team_2": team_2,
                 "team_win": team_1 if team_1.points > team_2.points else team_2,
                 "winner": winner,
-                "lucky": lucky}
+                "lucky": lucky,
+                "male": male,
+                "female": female}
 
     def solve_tie_finish(self, team_1, team_2):
         while team_1.get_player_winner().win == team_2.get_player_winner().win:
