@@ -14,6 +14,10 @@ class Play:
         team_2.new_round()
         team_1.finish_game()
         team_2.finish_game()
+        self.female_total = 0
+        self.male_total = 0
+        self.team_1_history = []
+        self.team_2_history = []
         winner = {"player": self.create_player(0, 0, 0, 0), "team": ""}
         male = 0
         female = 0
